@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_text_22">22sp</dimen>
+    <dimen name="main_cornerRadius">16dp</dimen>
+    <dimen name="main_iconPadding">16dp</dimen>
+    <dimen name="settings_text_16">16sp</dimen>
+    <dimen name="settings_image_paddingRight">18dp</dimen>
+    <dimen name="settings_image_width">42dp</dimen>
+    <dimen name="settings_image_height">24dp</dimen>
+    <dimen name="settings_text_paddingLeft">16dp</dimen>
+    <dimen name="settings_linerLayout_height">61dp</dimen>
+</resources>

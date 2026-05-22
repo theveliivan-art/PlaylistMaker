@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"  xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/settings_back_button"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:backgroundTint="@color/white"
+        android:gravity="left"
+        android:text="@string/button_settings_name"
+        android:textSize="@dimen/main_text_22"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        app:cornerRadius="@dimen/main_cornerRadius"
+        app:icon="@drawable/backarrow"
+        app:iconPadding="@dimen/main_iconPadding"
+        app:iconGravity="textStart"
+        app:iconTint="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_linerLayout_height"
+            android:text="@string/settings_text_blackTheme"
+            android:textSize="@dimen/settings_text_16"
+            android:paddingLeft="@dimen/settings_text_paddingLeft"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_linerLayout_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/settings_text_paddingLeft"
+                android:text="@string/settings_text_share"
+                android:textSize="@dimen/settings_text_16"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/settings_image_width"
+                android:layout_height="@dimen/settings_image_height"
+                android:paddingRight="@dimen/settings_image_paddingRight"
+                android:src="@drawable/share"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_linerLayout_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/settings_text_paddingLeft"
+                android:text="@string/settings_text_support"
+                android:textSize="@dimen/settings_text_16"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/settings_image_width"
+                android:layout_height="@dimen/settings_image_height"
+                android:paddingRight="@dimen/settings_image_paddingRight"
+                android:src="@drawable/support"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_linerLayout_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/settings_text_paddingLeft"
+                android:text="@string/settings_text_userAgreement"
+                android:textSize="@dimen/settings_text_16"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/settings_image_width"
+                android:layout_height="@dimen/settings_image_height"
+                android:paddingRight="@dimen/settings_image_paddingRight"
+                android:src="@drawable/arrowforward"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
