@@ -10,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
+import org.w3c.dom.Text
 
 class SearchActivity : AppCompatActivity() {
 
@@ -33,21 +35,15 @@ class SearchActivity : AppCompatActivity() {
         searchEditText = findViewById(R.id.searchEditText)
         val clearIcon = findViewById<ImageView>(R.id.clearIcon)
 
-        val searchTextWatcher = object : android.text.TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (!s.isNullOrEmpty()) {
-                        userSearchText = s.toString()
-                        clearIcon.visibility = View.VISIBLE
-                    }
-                    else {clearIcon.visibility = View.GONE}
-                }
-
-                override fun afterTextChanged(s: android.text.Editable?) {}
+        searchEditText.doOnTextChanged { text, start, before, count ->
+            if (!text.isNullOrEmpty()){
+                userSearchText = text.toString()
+                clearIcon.visibility = View.VISIBLE
+            }
+            else {clearIcon.visibility = View.GONE}
         }
 
-        searchEditText.addTextChangedListener(searchTextWatcher)
         searchEditText.setOnClickListener {
             searchEditText.requestFocus()
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

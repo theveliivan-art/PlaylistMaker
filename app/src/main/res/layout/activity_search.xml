@@ -15,8 +15,8 @@
         <ImageView
             android:id="@+id/search_back_button"
             android:foreground="?attr/selectableItemBackground"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/image_back_button_w_h"
+            android:layout_height="@dimen/image_back_button_w_h"
             android:padding="12dp"
             android:src="@drawable/ic_arrow_back_24"
             app:tint="@color/LightDarkFont"
@@ -33,10 +33,10 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:paddingLeft="@dimen/search_frame_padding_goriz"
+        android:paddingRight="@dimen/search_frame_padding_goriz"
+        android:paddingTop="@dimen/search_frame_padding_vert"
+        android:paddingBottom="@dimen/search_frame_padding_vert">
 
         <EditText style="@style/SettingsTextViewStyle"
             android:id="@+id/searchEditText"

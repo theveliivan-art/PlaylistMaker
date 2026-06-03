@@ -13,8 +13,8 @@
         <ImageView
             android:id="@+id/settings_back_button"
             android:foreground="?attr/selectableItemBackground"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/image_back_button_w_h"
+            android:layout_height="@dimen/image_back_button_w_h"
             android:padding="12dp"
             android:src="@drawable/ic_arrow_back_24"
             app:tint="@color/LightDarkFont"
