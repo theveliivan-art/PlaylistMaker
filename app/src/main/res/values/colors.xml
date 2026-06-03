@@ -3,4 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="MainTheme">#3772E7</color>
+    <color name="LightDarkTheme">#FFFFFFFF</color>
+    <color name="LightDarkFont">#FF000000</color>
+    <color name="switchThumbTint">#00D6C3</color>
+    <color name="switchTrackTint">#76EAE0</color>
+    <color name="editTextSearch">#E6E8EB</color>
+    <color name="editTextSearchHint">#AEAFB4</color>
 </resources>
