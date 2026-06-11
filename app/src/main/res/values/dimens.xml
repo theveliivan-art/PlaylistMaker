@@ -9,4 +9,7 @@
     <dimen name="settings_image_height">24dp</dimen>
     <dimen name="settings_text_paddingLeft">16dp</dimen>
     <dimen name="settings_linerLayout_height">61dp</dimen>
+    <dimen name="image_back_button_w_h">48dp</dimen>
+    <dimen name="search_frame_padding_goriz">16dp</dimen>
+    <dimen name="search_frame_padding_vert">8dp</dimen>
 </resources>

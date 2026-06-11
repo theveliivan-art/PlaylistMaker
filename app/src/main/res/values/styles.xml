@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">@dimen/main_text_22</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/main_cornerRadius</item>
+        <item name="iconPadding">@dimen/main_iconPadding</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">@color/black</item>
+    </style>
+    <style name="SettingsLinearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/settings_linerLayout_height</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="SettingsImageViewIconStyle">
+        <item name="android:layout_width">@dimen/settings_image_width</item>
+        <item name="android:layout_height">@dimen/settings_image_height</item>
+        <item name="android:paddingRight">@dimen/settings_image_paddingRight</item>
+    </style>
+    <style name="SettingsTextStyle">
+        <item name="android:textSize">@dimen/settings_text_16</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/LightDarkFont</item>
+    </style>
+    <style name="SettingsTextViewStyle"  parent="SettingsTextStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingLeft">@dimen/settings_text_paddingLeft</item>
+    </style>
+
+</resources>
