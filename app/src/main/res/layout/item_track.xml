@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/trackImage"
+            android:layout_width="@dimen/search_ic_cover_size"
+            android:layout_height="@dimen/search_ic_cover_size"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="13dp"
+            app:tint="@color/trackList"
+            tools:src="@drawable/ic_media_24" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/search_liner_padding_vert"
+            android:paddingTop="@dimen/search_liner_padding_goriz"
+            android:paddingRight="@dimen/search_liner_padding_vert"
+            android:paddingBottom="@dimen/search_liner_padding_goriz">
+
+            <TextView
+                android:id="@+id/trackName"
+                style="@style/SettingsTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Yesterday (Remastered 2009) Yesterday (Remastered 2009) Yesterday (Remastered 2009)" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/artistName"
+                    style="@style/SearchSingerTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    tools:text="Michael Jackson Michael Jackson Michael Jackson Michael Jackson" />
+
+                <ImageView
+                    android:id="@+id/separatorPoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_ellipse_13" />
+
+                <TextView
+                    android:id="@+id/trackTime"
+                    style="@style/SearchSingerTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal"
+                    tools:text="00:00" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/trackArrowForward"
+            android:layout_width="@dimen/search_track_arrow_forward"
+            android:layout_height="@dimen/search_track_arrow_forward"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_arrow_forward_24"
+            app:tint="@color/trackList" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

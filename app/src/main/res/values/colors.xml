@@ -9,4 +9,5 @@
     <color name="switchTrackTint">#76EAE0</color>
     <color name="editTextSearch">#E6E8EB</color>
     <color name="editTextSearchHint">#AEAFB4</color>
+    <color name="trackList">#AEAFB4</color>
 </resources>
