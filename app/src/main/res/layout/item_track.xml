@@ -16,8 +16,7 @@
             android:layout_height="@dimen/search_ic_cover_size"
             android:layout_gravity="start|center_vertical"
             android:layout_marginStart="13dp"
-            app:tint="@color/trackList"
-            tools:src="@drawable/ic_media_24" />
+            tools:src="@drawable/ic_track_placeholder_45" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 
 class TrackViewHolder(trackView: ViewGroup): RecyclerView.ViewHolder( LayoutInflater.from(trackView.context).inflate(R.layout.item_track, trackView, false)) {
     private val trackImage: ImageView = itemView.findViewById(R.id.trackImage)
@@ -19,10 +20,15 @@ class TrackViewHolder(trackView: ViewGroup): RecyclerView.ViewHolder( LayoutInfl
         artistName.text = track.artistName
         trackTime.text = track.trackTime
 
+        val radiusInPx = itemView.resources.getDimensionPixelSize(R.dimen.search_track_image_radius)
+        val requestOptions = RequestOptions()
+            .transform(RoundedCorners(radiusInPx))
+            .placeholder(R.drawable.ic_track_placeholder_45)
+            .error(R.drawable.ic_track_placeholder_45)
+
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
-            .placeholder(R.drawable.ic_media_24)
-            .transform(RoundedCorners(2))
+            .apply(requestOptions)
             .into(trackImage)
 
     }
