@@ -13,18 +13,31 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.view.inputmethod.EditorInfo
+import android.widget.Button
+import android.widget.LinearLayout
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Callback
+import retrofit2.Call
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
 
     private var userSearchText: String = ""
-    private val tracks: MutableList<Track> = mutableListOf(
-        Track("Smells Like Teen Spirit","Nirvana","5:01","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"),
-        Track("Billie Jean","Michael Jackson","4:35","https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"),
-        Track("Stayin' Alive","Bee Gees","4:10","https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"),
-        Track("Whole Lotta Love","Led Zeppelin","5:33","https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"),
-        Track("Sweet Child O'Mine","Guns N' Roses","5:03","https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg")
-    )
+    private var tracks = mutableListOf<Track>()
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("https://itunes.apple.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    private val iTunesSearchService = retrofit.create(ITunesSearchAPI::class.java)
+    val trackAdapter = TrackAdapter(tracks)
+
     private lateinit var searchEditText: EditText
+    private lateinit var linerNothingSearch: LinearLayout
+    private lateinit var linerInternetProblem: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +51,6 @@ class SearchActivity : AppCompatActivity() {
 
         val recyclerViewTracks = findViewById<RecyclerView>(R.id.recyclerViewTracks)
         recyclerViewTracks.layoutManager = LinearLayoutManager(this)
-        val trackAdapter = TrackAdapter(tracks)
         recyclerViewTracks.adapter = trackAdapter
 
         val button_back_click = findViewById<ImageView>(R.id.search_back_button)
@@ -47,8 +59,11 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchEditText = findViewById(R.id.searchEditText)
-        val clearIcon = findViewById<ImageView>(R.id.clearIcon)
+        linerNothingSearch = findViewById<LinearLayout>(R.id.search_nothing_linear)
+        linerInternetProblem = findViewById<LinearLayout>(R.id.search_internet_problem)
 
+        val clearIcon = findViewById<ImageView>(R.id.clearIcon)
+         val updateButton = findViewById<Button>(R.id.search_button_update)
 
         searchEditText.doOnTextChanged { text, start, before, count ->
             if (!text.isNullOrEmpty()){
@@ -64,12 +79,27 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
 
         }
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                findTracks()
+            }
+            false
+        }
+
+        updateButton.setOnClickListener {
+            linerInternetProblem.visibility = View.GONE
+            findTracks()
+        }
 
         clearIcon.setOnClickListener {
             searchEditText.text.clear()
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             searchEditText.clearFocus()
+            tracks.clear()
+            trackAdapter.notifyDataSetChanged()
+            linerNothingSearch.visibility = View.GONE
+            linerInternetProblem.visibility = View.GONE
         }
 
     }
@@ -84,6 +114,41 @@ class SearchActivity : AppCompatActivity() {
         if (restoredText.isNotEmpty()) {
             searchEditText.setText(restoredText)
         }
+    }
+
+    fun findTracks(){
+        iTunesSearchService.search(userSearchText)
+            .enqueue(object : Callback<TracksResponse> {
+                override fun onResponse(call: Call<TracksResponse>,
+                                        response: Response<TracksResponse>) {
+                    if (response.code()==200){
+                        tracks.clear()
+                        val body = response.body()
+                        if (body != null && body.results.isNotEmpty()) {
+                            val convertedTracks = body.results.map { dto ->
+                                val formattedTime = SimpleDateFormat("mm:ss", Locale.getDefault())
+                                    .format(dto.trackTimeMillis)
+                                Track(
+                                    trackName = dto.trackName,
+                                    artistName = dto.artistName,
+                                    trackTime = formattedTime,
+                                    artworkUrl100 = dto.artworkUrl100
+                                )
+                            }
+                            tracks.addAll(convertedTracks)
+                            trackAdapter.notifyDataSetChanged()
+                        }
+                        if (tracks.isEmpty()){linerNothingSearch.visibility = View.VISIBLE}
+                        else {linerNothingSearch.visibility = View.GONE}
+                    }
+
+                }
+
+                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                    linerInternetProblem.visibility = View.VISIBLE
+                }
+
+            })
     }
 
     companion object {

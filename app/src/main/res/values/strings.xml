@@ -15,4 +15,8 @@
     <string name="settings_arrow_forward_url">https://yandex.ru/legal/practicum_offer/ru/</string>
     <string name="search_text_name">Поиск</string>
     <string name="search_text_hint">Поиск</string>
+    <string name="search_text_nothing">Ничего не найдено</string>
+    <string name="search_text_internet_problem">Проблемы со связью</string>
+    <string name="search_text_check_internet">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="search_text_update">Обновить</string>
 </resources>

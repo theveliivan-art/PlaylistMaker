@@ -10,4 +10,5 @@
     <color name="editTextSearch">#FFFFFFFF</color>
     <color name="editTextSearchHint">#1A1B22</color>
     <color name="trackList">#FFFFFFFF</color>
+    <color name="errorSearch">#FFFFFF</color>
 </resources>
