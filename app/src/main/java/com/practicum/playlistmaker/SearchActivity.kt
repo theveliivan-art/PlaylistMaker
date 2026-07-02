@@ -29,12 +29,12 @@ class SearchActivity : AppCompatActivity() {
     private var userSearchText: String = ""
     private var tracks = mutableListOf<Track>()
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")
+        .baseUrl(ITUNES_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val iTunesSearchService = retrofit.create(ITunesSearchAPI::class.java)
-    val trackAdapter = TrackAdapter(tracks)
-
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private val trackAdapter = TrackAdapter(tracks)
     private lateinit var searchEditText: EditText
     private lateinit var linerNothingSearch: LinearLayout
     private lateinit var linerInternetProblem: LinearLayout
@@ -121,13 +121,12 @@ class SearchActivity : AppCompatActivity() {
             .enqueue(object : Callback<TracksResponse> {
                 override fun onResponse(call: Call<TracksResponse>,
                                         response: Response<TracksResponse>) {
-                    if (response.code()==200){
+                    if (response.isSuccessful){
                         tracks.clear()
                         val body = response.body()
                         if (body != null && body.results.isNotEmpty()) {
                             val convertedTracks = body.results.map { dto ->
-                                val formattedTime = SimpleDateFormat("mm:ss", Locale.getDefault())
-                                    .format(dto.trackTimeMillis)
+                                val formattedTime = dateFormat.format(dto.trackTimeMillis)
                                 Track(
                                     trackName = dto.trackName,
                                     artistName = dto.artistName,
@@ -153,5 +152,6 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         const val SEARCH_TEXT = "PRODUCT_AMOUNT"
+        private const val ITUNES_URL = "https://itunes.apple.com"
     }
 }
