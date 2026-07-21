@@ -36,13 +36,14 @@
         android:paddingTop="24dp"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.SwitchCompat style="@style/SettingsTextStyle"
+        <com.google.android.material.switchmaterial.SwitchMaterial style="@style/SettingsTextStyle"
+            android:id="@+id/themeSwitcher"
             android:layout_width="match_parent"
             android:layout_height="@dimen/settings_linerLayout_height"
-            android:text="@string/settings_text_blackTheme"
             android:paddingLeft="@dimen/settings_text_paddingLeft"
-            app:thumbTint="@color/switchThumbTint"
-            app:trackTint="@color/switchTrackTint"
+            android:paddingRight="@dimen/settings_text_paddingLeft"
+            android:text="@string/settings_text_blackTheme"
+            android:layout_gravity="start"
             />
 
         <LinearLayout style="@style/SettingsLinearLayoutStyle"
