@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class TrackAdapter( private val tracks: List<Track>,
-                    private val historySearch: ArrayList<Track>,
+                    private val historySearch: MutableList<Track>,
                     private val onHistoryChangeListener: OnHistoryChangeListener? = null
                     ): RecyclerView.Adapter<TrackViewHolder>() {
 
@@ -33,11 +33,15 @@ class TrackAdapter( private val tracks: List<Track>,
                break
            }
         }
-        historySearch.addFirst(newTrack)
-        while (historySearch.size>10){
-            historySearch.removeLast()
+        historySearch.add(0, newTrack)
+        while (historySearch.size>COUNT_TRACK_IN_HISTORY){
+            historySearch.removeAt(historySearch.size-1)
         }
         onHistoryChangeListener?.onHistoryChanged()
+    }
+
+    companion object {
+        const val COUNT_TRACK_IN_HISTORY = 10
     }
 
 }

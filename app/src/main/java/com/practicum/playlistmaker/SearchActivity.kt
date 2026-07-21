@@ -30,7 +30,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
 
     private var userSearchText: String = ""
     private var tracks = mutableListOf<Track>()
-    private var historySearch = arrayListOf<Track>()
+    private var historySearch = mutableListOf<Track>()
     private val retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_URL)
         .addConverterFactory(GsonConverterFactory.create())
