@@ -19,4 +19,6 @@
     <string name="search_text_internet_problem">Проблемы со связью</string>
     <string name="search_text_check_internet">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="search_text_update">Обновить</string>
+    <string name="search_text_you_searched">Вы искали</string>
+    <string name="search_text_clear_history">Очистить историю</string>
 </resources>

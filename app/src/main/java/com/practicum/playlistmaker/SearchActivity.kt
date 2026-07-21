@@ -23,21 +23,31 @@ import retrofit2.Call
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener {
 
     private var userSearchText: String = ""
     private var tracks = mutableListOf<Track>()
+    private var historySearch = mutableListOf<Track>()
     private val retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
+    private val sharedPrefs by lazy {
+        getSharedPreferences(PLAYLISTMAKER_PREFERENCES, MODE_PRIVATE)
+    }
+    private val gson = Gson()
     private val iTunesSearchService = retrofit.create(ITunesSearchAPI::class.java)
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-    private val trackAdapter = TrackAdapter(tracks)
+    private lateinit var trackAdapter: TrackAdapter
+    private lateinit var historyAdapter: TrackAdapter
     private lateinit var searchEditText: EditText
     private lateinit var linerNothingSearch: LinearLayout
     private lateinit var linerInternetProblem: LinearLayout
+
+    private lateinit var linerSearchHistory: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +59,18 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+        loadHistory()
+
+        trackAdapter = TrackAdapter(tracks, historySearch, this)
+        historyAdapter = TrackAdapter(historySearch, historySearch)
+
         val recyclerViewTracks = findViewById<RecyclerView>(R.id.recyclerViewTracks)
         recyclerViewTracks.layoutManager = LinearLayoutManager(this)
         recyclerViewTracks.adapter = trackAdapter
+
+        val recyclerViewHistory = findViewById<RecyclerView>(R.id.recyclerViewHistory)
+        recyclerViewHistory.layoutManager = LinearLayoutManager(this)
+        recyclerViewHistory.adapter = historyAdapter
 
         val button_back_click = findViewById<ImageView>(R.id.search_back_button)
         button_back_click.setOnClickListener {
@@ -61,16 +80,22 @@ class SearchActivity : AppCompatActivity() {
         searchEditText = findViewById(R.id.searchEditText)
         linerNothingSearch = findViewById<LinearLayout>(R.id.search_nothing_linear)
         linerInternetProblem = findViewById<LinearLayout>(R.id.search_internet_problem)
+        linerSearchHistory = findViewById<LinearLayout>(R.id.search_history)
 
         val clearIcon = findViewById<ImageView>(R.id.clearIcon)
-         val updateButton = findViewById<Button>(R.id.search_button_update)
+        val updateButton = findViewById<Button>(R.id.search_button_update)
+        val clearHistoryButton = findViewById<Button>(R.id.search_button_clear_history)
 
         searchEditText.doOnTextChanged { text, start, before, count ->
             if (!text.isNullOrEmpty()){
                 userSearchText = text.toString()
                 clearIcon.visibility = View.VISIBLE
+                linerSearchHistory.visibility = View.GONE
             }
-            else {clearIcon.visibility = View.GONE}
+            else {
+                clearIcon.visibility = View.GONE
+                linerSearchHistory.visibility = if(searchEditText.hasFocus()&& historySearch.isEmpty()) View.GONE else View.VISIBLE
+            }
         }
 
         searchEditText.setOnClickListener {
@@ -85,6 +110,9 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+        searchEditText.setOnFocusChangeListener{view, hasFocus ->
+            linerSearchHistory.visibility = if (hasFocus && historySearch.isEmpty()) View.GONE else View.VISIBLE
+        }
 
         updateButton.setOnClickListener {
             linerInternetProblem.visibility = View.GONE
@@ -98,8 +126,16 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.clearFocus()
             tracks.clear()
             trackAdapter.notifyDataSetChanged()
+            historyAdapter.notifyDataSetChanged()
             linerNothingSearch.visibility = View.GONE
             linerInternetProblem.visibility = View.GONE
+        }
+
+        clearHistoryButton.setOnClickListener {
+            historySearch.clear()
+            saveHistory()
+            historyAdapter.notifyDataSetChanged()
+            linerSearchHistory.visibility = View.GONE
         }
 
     }
@@ -131,7 +167,8 @@ class SearchActivity : AppCompatActivity() {
                                     trackName = dto.trackName,
                                     artistName = dto.artistName,
                                     trackTime = formattedTime,
-                                    artworkUrl100 = dto.artworkUrl100
+                                    artworkUrl100 = dto.artworkUrl100,
+                                    trackId = dto.trackId
                                 )
                             }
                             tracks.addAll(convertedTracks)
@@ -148,6 +185,25 @@ class SearchActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    override fun onHistoryChanged() {
+        saveHistory()
+        historyAdapter.notifyDataSetChanged()
+    }
+    fun saveHistory() {
+        val json = gson.toJson(historySearch)
+        sharedPrefs.edit().putString(HISTORY_SEARCH_KEY, json).apply()
+    }
+
+    private fun loadHistory() {
+        val json = sharedPrefs.getString(HISTORY_SEARCH_KEY, null)
+        if (!json.isNullOrEmpty()) {
+            val type = object : TypeToken<List<Track>>() {}.type
+            val savedList: List<Track> = gson.fromJson(json, type)
+            historySearch.clear()
+            historySearch.addAll(savedList)
+        }
     }
 
     companion object {
