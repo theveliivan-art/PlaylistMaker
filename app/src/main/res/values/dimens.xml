@@ -20,4 +20,11 @@
     <dimen name="search_track_image_radius">2dp</dimen>
     <dimen name="search_text_19">19sp</dimen>
     <dimen name="search_text_14">14sp</dimen>
+    <dimen name="media_track_image_radius">8dp</dimen>
+    <dimen name="media_margin_24">24dp</dimen>
+    <dimen name="media_margin_16">16dp</dimen>
+    <dimen name="media_margin_9">9dp</dimen>
+    <dimen name="text_22">22sp</dimen>
+    <dimen name="text_14">14sp</dimen>
+    <dimen name="text_13">13sp</dimen>
 </resources>

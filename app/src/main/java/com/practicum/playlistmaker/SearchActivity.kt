@@ -168,7 +168,11 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
                                     artistName = dto.artistName,
                                     trackTime = formattedTime,
                                     artworkUrl100 = dto.artworkUrl100,
-                                    trackId = dto.trackId
+                                    trackId = dto.trackId,
+                                    collectionName = dto.collectionName,
+                                    releaseDate = dto.releaseDate,
+                                    primaryGenreName = dto.primaryGenreName,
+                                    country = dto.country
                                 )
                             }
                             tracks.addAll(convertedTracks)
