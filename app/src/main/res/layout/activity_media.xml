@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="@id/leftBorder24"
         app:layout_constraintEnd_toEndOf="@id/rightBorder24"
         app:layout_constraintTop_toBottomOf="@+id/media_button_back"
-        app:tint="@color/grey" />
+         />
 
     <TextView
         style="@style/MediaTrackTextHead"
@@ -164,7 +164,7 @@
         android:id="@+id/media_inf_album"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/media_margin_9"
+        android:layout_marginTop="@dimen/media_margin_8"
         android:text="@string/media_text_album"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/leftBorder16"
@@ -189,7 +189,7 @@
         android:id="@+id/media_inf_year"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/media_margin_9"
+        android:layout_marginTop="@dimen/media_margin_8"
         android:text="@string/media_text_year"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/leftBorder16"
@@ -214,7 +214,7 @@
         android:id="@+id/media_inf_genre"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/media_margin_9"
+        android:layout_marginTop="@dimen/media_margin_8"
         android:text="@string/media_text_genre"
         app:layout_constraintStart_toStartOf="@id/leftBorder16"
         app:layout_constraintEnd_toStartOf="@id/media_data_genre"
@@ -237,7 +237,7 @@
         android:id="@+id/media_inf_country"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/media_margin_9"
+        android:layout_marginTop="@dimen/media_margin_8"
         android:text="@string/media_text_country"
         app:layout_constraintStart_toStartOf="@id/leftBorder16"
         app:layout_constraintEnd_toStartOf="@id/media_data_country"

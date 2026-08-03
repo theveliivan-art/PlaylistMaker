@@ -23,8 +23,8 @@
     <dimen name="media_track_image_radius">8dp</dimen>
     <dimen name="media_margin_24">24dp</dimen>
     <dimen name="media_margin_16">16dp</dimen>
-    <dimen name="media_margin_9">9dp</dimen>
+    <dimen name="media_margin_8">8dp</dimen>
     <dimen name="text_22">22sp</dimen>
     <dimen name="text_14">14sp</dimen>
-    <dimen name="text_13">13sp</dimen>
+    <dimen name="text_12">12sp</dimen>
 </resources>

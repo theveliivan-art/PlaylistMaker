@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -57,25 +58,25 @@ class MediaActivity : AppCompatActivity() {
         val trackAlbumInf = findViewById<TextView>(R.id.media_inf_album)
         val trackAlbumData = findViewById<TextView>(R.id.media_data_album)
         if (track.collectionName.isEmpty()){
-            trackAlbumInf.visibility = View.GONE
-            trackAlbumData.visibility = View.GONE
+            trackAlbumInf.isVisible = false
+            trackAlbumData.isVisible = false
         }
         else{
             trackAlbumData.text = track.collectionName
-            trackAlbumInf.visibility = View.VISIBLE
-            trackAlbumData.visibility = View.VISIBLE
+            trackAlbumInf.isVisible = true
+            trackAlbumData.isVisible = true
         }
 
         val trackYearInf = findViewById<TextView>(R.id.media_inf_year)
         val trackYearData = findViewById<TextView>(R.id.media_data_year)
         if (track.releaseDate.isEmpty()){
-            trackYearInf.visibility = View.GONE
-            trackYearData.visibility = View.GONE
+            trackYearInf.isVisible = false
+            trackYearData.isVisible = false
         }
         else{
             trackYearData.text = extractYear(track.releaseDate)
-            trackYearInf.visibility = View.VISIBLE
-            trackYearData.visibility = View.VISIBLE
+            trackYearInf.isVisible = true
+            trackYearData.isVisible = true
         }
     }
     private fun extractYear(releaseDate: String): String? {
