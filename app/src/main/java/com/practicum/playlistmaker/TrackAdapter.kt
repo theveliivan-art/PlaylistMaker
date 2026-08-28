@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
@@ -17,9 +18,15 @@ class TrackAdapter( private val tracks: List<Track>,
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
+        val track = tracks[position]
+        holder.bind(track)
         holder.itemView.setOnClickListener {
-            addTrackToHistory(tracks[position])
+            addTrackToHistory(track)
+            val context = holder.itemView.context
+            val intent = Intent(context, MediaActivity::class.java).apply {
+                putExtra("track", track)
+            }
+            context.startActivity(intent)
         }
     }
 

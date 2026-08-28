@@ -21,4 +21,9 @@
     <string name="search_text_update">Обновить</string>
     <string name="search_text_you_searched">Вы искали</string>
     <string name="search_text_clear_history">Очистить историю</string>
+    <string name="media_text_duration">Длительность</string>
+    <string name="media_text_album">Альбом</string>
+    <string name="media_text_year">Год</string>
+    <string name="media_text_genre">Жанр</string>
+    <string name="media_text_country">Страна</string>
 </resources>
