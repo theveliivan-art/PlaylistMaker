@@ -2,6 +2,8 @@ package com.practicum.playlistmaker
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -13,8 +15,28 @@ import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-
+import android.os.Handler
+import android.os.Looper
+import android.media.MediaPlayer
+import java.text.SimpleDateFormat
+import java.util.Locale
 class MediaActivity : AppCompatActivity() {
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+
+    private var playerState = STATE_DEFAULT
+    private lateinit var mediaPlayer: MediaPlayer
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var updateTimeRunnable: Runnable
+    private lateinit var buttonPlay: ImageButton
+    private lateinit var buttonPause: ImageButton
+    private lateinit var trackPlaybackTime: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,8 +100,93 @@ class MediaActivity : AppCompatActivity() {
             trackYearInf.isVisible = true
             trackYearData.isVisible = true
         }
+
+        buttonPlay = findViewById<ImageButton>(R.id.buttonPlay)
+        buttonPause = findViewById<ImageButton>(R.id.buttonPause)
+        trackPlaybackTime = findViewById<TextView>(R.id.media_track_duration)
+
+        buttonPlay.isVisible = true
+        buttonPause.isVisible = false
+        buttonPlay.isEnabled = false
+
+        mediaPlayer = MediaPlayer()
+        mediaPlayer.setDataSource(track.previewUrl)
+        mediaPlayer.prepareAsync()
+
+        mediaPlayer.setOnPreparedListener {
+            buttonPlay.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+
+        mediaPlayer.setOnCompletionListener {
+
+            handler.removeCallbacks(updateTimeRunnable)
+            trackPlaybackTime.text = "00:00"
+
+            buttonPlay.isVisible = true
+            buttonPause.isVisible = false
+            buttonPlay.isEnabled = false
+            playerState = STATE_DEFAULT
+
+            mediaPlayer.reset()
+            mediaPlayer.setDataSource(track.previewUrl)
+            mediaPlayer.prepareAsync()
+        }
+
+        updateTimeRunnable = object : Runnable {
+            override fun run() {
+                if (playerState == STATE_PLAYING) {
+                    val formatted = SimpleDateFormat("mm:ss", Locale.getDefault())
+                        .format(mediaPlayer.currentPosition)
+                    trackPlaybackTime.text = formatted
+                    handler.postDelayed(this, 400)
+                }
+            }
+        }
+
+        buttonPlay.setOnClickListener {
+            if (playerState == STATE_PREPARED || playerState == STATE_PAUSED) {
+                startPlayer()
+            }
+        }
+
+        buttonPause.setOnClickListener {
+            if (playerState == STATE_PLAYING) {
+                pausePlayer()
+            }
+        }
+
     }
     private fun extractYear(releaseDate: String): String? {
         return releaseDate.substringBefore("-").takeIf { it.length == 4 }
     }
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playerState = STATE_PLAYING
+        buttonPlay.isVisible = false
+        buttonPause.isVisible = true
+        handler.removeCallbacks(updateTimeRunnable)
+        handler.post(updateTimeRunnable)
+    }
+    private fun pausePlayer() {
+        if (playerState == STATE_PLAYING) {
+            mediaPlayer.pause()
+            playerState = STATE_PAUSED
+            buttonPlay.isVisible = true
+            buttonPause.isVisible = false
+            handler.removeCallbacks(updateTimeRunnable)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(updateTimeRunnable)
+        mediaPlayer.release()
+    }
+
 }
