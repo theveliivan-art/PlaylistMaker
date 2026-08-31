@@ -25,6 +25,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import android.os.Handler
+import android.os.Looper
+import android.widget.ProgressBar
 
 class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener {
 
@@ -48,6 +51,10 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
     private lateinit var linerInternetProblem: LinearLayout
 
     private lateinit var linerSearchHistory: LinearLayout
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { findTracks() }
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +88,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
         linerNothingSearch = findViewById<LinearLayout>(R.id.search_nothing_linear)
         linerInternetProblem = findViewById<LinearLayout>(R.id.search_internet_problem)
         linerSearchHistory = findViewById<LinearLayout>(R.id.search_history)
+        progressBar = findViewById(R.id.search_progress_bar)
 
         val clearIcon = findViewById<ImageView>(R.id.clearIcon)
         val updateButton = findViewById<Button>(R.id.search_button_update)
@@ -91,10 +99,14 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
                 userSearchText = text.toString()
                 clearIcon.visibility = View.VISIBLE
                 linerSearchHistory.visibility = View.GONE
+                handler.removeCallbacks(searchRunnable)
+                handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
             }
             else {
                 clearIcon.visibility = View.GONE
                 linerSearchHistory.visibility = if(searchEditText.hasFocus()&& historySearch.isEmpty()) View.GONE else View.VISIBLE
+                handler.removeCallbacks(searchRunnable)
+                progressBar.visibility = View.GONE
             }
         }
 
@@ -104,12 +116,12 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
             inputMethodManager.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
 
         }
-        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            /*searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 findTracks()
             }
             false
-        }
+        }*/
         searchEditText.setOnFocusChangeListener{view, hasFocus ->
             linerSearchHistory.visibility = if (hasFocus && historySearch.isEmpty()) View.GONE else View.VISIBLE
         }
@@ -129,6 +141,8 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
             historyAdapter.notifyDataSetChanged()
             linerNothingSearch.visibility = View.GONE
             linerInternetProblem.visibility = View.GONE
+            progressBar.visibility = View.GONE
+            handler.removeCallbacks(searchRunnable)
         }
 
         clearHistoryButton.setOnClickListener {
@@ -153,10 +167,16 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
     }
 
     fun findTracks(){
+
+        linerInternetProblem.visibility = View.GONE
+        linerNothingSearch.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+
         iTunesSearchService.search(userSearchText)
             .enqueue(object : Callback<TracksResponse> {
                 override fun onResponse(call: Call<TracksResponse>,
                                         response: Response<TracksResponse>) {
+                    progressBar.visibility = View.GONE
                     if (response.isSuccessful){
                         tracks.clear()
                         val body = response.body()
@@ -172,7 +192,8 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
                                     collectionName = dto.collectionName,
                                     releaseDate = dto.releaseDate,
                                     primaryGenreName = dto.primaryGenreName,
-                                    country = dto.country
+                                    country = dto.country,
+                                    previewUrl = dto.previewUrl
                                 )
                             }
                             tracks.addAll(convertedTracks)
@@ -186,6 +207,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
 
                 override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
                     linerInternetProblem.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                 }
 
             })
@@ -213,5 +235,6 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
     companion object {
         const val SEARCH_TEXT = "PRODUCT_AMOUNT"
         private const val ITUNES_URL = "https://itunes.apple.com"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
