@@ -116,12 +116,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.OnHistoryChangeListener
             inputMethodManager.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
 
         }
-            /*searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                findTracks()
-            }
-            false
-        }*/
+
         searchEditText.setOnFocusChangeListener{view, hasFocus ->
             linerSearchHistory.visibility = if (hasFocus && historySearch.isEmpty()) View.GONE else View.VISIBLE
         }

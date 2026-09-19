@@ -22,13 +22,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 class MediaActivity : AppCompatActivity() {
 
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-    }
-
     private var playerState = STATE_DEFAULT
     private lateinit var mediaPlayer: MediaPlayer
     private val handler = Handler(Looper.getMainLooper())
@@ -36,6 +29,8 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var buttonPlay: ImageButton
     private lateinit var buttonPause: ImageButton
     private lateinit var trackPlaybackTime: TextView
+
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,10 +131,10 @@ class MediaActivity : AppCompatActivity() {
         updateTimeRunnable = object : Runnable {
             override fun run() {
                 if (playerState == STATE_PLAYING) {
-                    val formatted = SimpleDateFormat("mm:ss", Locale.getDefault())
+                    val formatted = dateFormat
                         .format(mediaPlayer.currentPosition)
                     trackPlaybackTime.text = formatted
-                    handler.postDelayed(this, 400)
+                    handler.postDelayed(this, DELAY_PLAYBACKTIME)
                 }
             }
         }
@@ -187,6 +182,14 @@ class MediaActivity : AppCompatActivity() {
         super.onDestroy()
         handler.removeCallbacks(updateTimeRunnable)
         mediaPlayer.release()
+    }
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DELAY_PLAYBACKTIME = 400L
     }
 
 }
