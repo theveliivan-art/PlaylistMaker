@@ -3,7 +3,8 @@ package com.practicum.playlistmaker
 import android.content.Intent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-
+import android.os.Handler
+import android.os.Looper
 class TrackAdapter( private val tracks: List<Track>,
                     private val historySearch: MutableList<Track>,
                     private val onHistoryChangeListener: OnHistoryChangeListener? = null
@@ -12,6 +13,8 @@ class TrackAdapter( private val tracks: List<Track>,
     interface OnHistoryChangeListener {
         fun onHistoryChanged()
     }
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         return TrackViewHolder(parent)
@@ -21,12 +24,14 @@ class TrackAdapter( private val tracks: List<Track>,
         val track = tracks[position]
         holder.bind(track)
         holder.itemView.setOnClickListener {
-            addTrackToHistory(track)
-            val context = holder.itemView.context
-            val intent = Intent(context, MediaActivity::class.java).apply {
-                putExtra("track", track)
+            if (clickDebounce()) {
+                addTrackToHistory(track)
+                val context = holder.itemView.context
+                val intent = Intent(context, MediaActivity::class.java).apply {
+                    putExtra("track", track)
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
         }
     }
 
@@ -46,9 +51,17 @@ class TrackAdapter( private val tracks: List<Track>,
         }
         onHistoryChangeListener?.onHistoryChanged()
     }
-
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
     companion object {
         const val COUNT_TRACK_IN_HISTORY = 10
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
 }
