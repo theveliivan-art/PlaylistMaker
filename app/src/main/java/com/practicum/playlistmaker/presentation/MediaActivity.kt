@@ -1,8 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation
 
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,15 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import android.os.Handler
-import android.os.Looper
-import android.media.MediaPlayer
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 class MediaActivity : AppCompatActivity() {
 
     private var playerState = STATE_DEFAULT
