@@ -6,13 +6,14 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        applyTheme(Creator.provideThemeInteractor(this).isDarkTheme())
+        Creator.initialize(this)
+        applyTheme(Creator.provideThemeInteractor().isDarkTheme())
     }
 
-    fun isDarkTheme(): Boolean = Creator.provideThemeInteractor(this).isDarkTheme()
+    fun isDarkTheme(): Boolean = Creator.provideThemeInteractor().isDarkTheme()
 
     fun switchTheme(enabled: Boolean) {
-        Creator.provideThemeInteractor(this).setDarkTheme(enabled)
+        Creator.provideThemeInteractor().setDarkTheme(enabled)
         applyTheme(enabled)
     }
 

@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.presentation
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.app.Application
 import com.practicum.playlistmaker.data.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.SettingsRepositoryImpl
 import com.practicum.playlistmaker.data.TracksRepositoryImpl
@@ -22,7 +23,11 @@ object Creator {
     private const val ITUNES_URL = "https://itunes.apple.com"
 
     private val gson: Gson = Gson()
+    private lateinit var application: Application
 
+    fun initialize(app: Application) {
+        application = app
+    }
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(ITUNES_URL)
@@ -34,15 +39,16 @@ object Creator {
         retrofit.create(ITunesSearchAPI::class.java)
     }
 
-    private fun prefs(context: Context): SharedPreferences =
-        context.getSharedPreferences(PLAYLISTMAKER_PREFERENCES, Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences by lazy {
+        application.getSharedPreferences(PLAYLISTMAKER_PREFERENCES, Context.MODE_PRIVATE)
+    }
 
     fun provideSearchTracksInteractor(): SearchTracksInteractor =
         SearchTracksInteractorImpl(TracksRepositoryImpl(api))
 
-    fun provideSearchHistoryInteractor(context: Context): SearchHistoryInteractor =
-        SearchHistoryInteractorImpl(SearchHistoryRepositoryImpl(prefs(context), gson))
+    fun provideSearchHistoryInteractor(): SearchHistoryInteractor =
+        SearchHistoryInteractorImpl(SearchHistoryRepositoryImpl(prefs, gson))
 
-    fun provideThemeInteractor(context: Context): ThemeInteractor =
-        ThemeInteractorImpl(SettingsRepositoryImpl(prefs(context)))
+    fun provideThemeInteractor(): ThemeInteractor =
+        ThemeInteractorImpl(SettingsRepositoryImpl(prefs))
 }

@@ -59,7 +59,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchTracksInteractor = Creator.provideSearchTracksInteractor()
-        searchHistoryInteractor = Creator.provideSearchHistoryInteractor(this)
+        searchHistoryInteractor = Creator.provideSearchHistoryInteractor()
 
         historySearch.addAll(searchHistoryInteractor.getHistory())
 
