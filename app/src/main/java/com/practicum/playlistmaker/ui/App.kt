@@ -1,6 +1,8 @@
-package com.practicum.playlistmaker.presentation
+package com.practicum.playlistmaker.ui
+
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.creator.Creator
 
 class App : Application() {
 
@@ -9,19 +11,10 @@ class App : Application() {
         Creator.initialize(this)
         applyTheme(Creator.provideThemeInteractor().isDarkTheme())
     }
-
-    fun isDarkTheme(): Boolean = Creator.provideThemeInteractor().isDarkTheme()
-
-    fun switchTheme(enabled: Boolean) {
-        Creator.provideThemeInteractor().setDarkTheme(enabled)
-        applyTheme(enabled)
-    }
-
-    private fun applyTheme(enabled: Boolean) {
+    fun applyTheme(enabled: Boolean) {
         AppCompatDelegate.setDefaultNightMode(
             if (enabled) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
 }
-

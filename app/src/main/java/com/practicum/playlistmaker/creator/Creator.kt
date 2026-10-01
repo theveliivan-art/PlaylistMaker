@@ -1,8 +1,9 @@
-package com.practicum.playlistmaker.presentation
+package com.practicum.playlistmaker.creator
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.app.Application
+import com.google.gson.Gson
 import com.practicum.playlistmaker.data.SearchHistoryRepositoryImpl
 import com.practicum.playlistmaker.data.SettingsRepositoryImpl
 import com.practicum.playlistmaker.data.TracksRepositoryImpl
@@ -13,7 +14,6 @@ import com.practicum.playlistmaker.domain.api.ThemeInteractor
 import com.practicum.playlistmaker.domain.impl.SearchHistoryInteractorImpl
 import com.practicum.playlistmaker.domain.impl.SearchTracksInteractorImpl
 import com.practicum.playlistmaker.domain.impl.ThemeInteractorImpl
-import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
