@@ -1,12 +1,18 @@
-package com.practicum.playlistmaker.presentation
+package com.practicum.playlistmaker.ui.search
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.domain.models.Track
 
-class TrackAdapter(private val tracks: List<Track>,
-                   private val clickListener: (Track) -> Unit):RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private var tracks: List<Track>,
+                   private val clickListener: (Track) -> Unit):
+    RecyclerView.Adapter<TrackViewHolder>() {
 
+    fun submitList(newTracks: List<Track>) {
+        if (tracks == newTracks) return
+        tracks = newTracks
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder(parent)
 
