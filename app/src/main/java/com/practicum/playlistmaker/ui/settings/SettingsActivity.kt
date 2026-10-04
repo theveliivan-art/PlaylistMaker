@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation
+package com.practicum.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -6,12 +6,18 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.practicum.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.R
+import androidx.lifecycle.ViewModelProvider
+import com.practicum.playlistmaker.creator.Creator
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: SettingsViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,12 +28,15 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModelFactory(Creator.provideThemeInteractor())
+        )[SettingsViewModel::class.java]
+
         findViewById<ImageView>(R.id.settings_back_button).setOnClickListener { finish() }
 
-        val app = applicationContext as App
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        themeSwitcher.isChecked = app.isDarkTheme()
-        themeSwitcher.setOnCheckedChangeListener { _, checked -> app.switchTheme(checked) }
+        themeSwitcher.setOnCheckedChangeListener { _, checked -> viewModel.switchTheme(checked) }
 
         findViewById<ImageView>(R.id.settings_share_button).setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -47,7 +56,21 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         findViewById<ImageView>(R.id.settings_arrow_forward_button).setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.settings_arrow_forward_url))))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(getString(R.string.settings_arrow_forward_url))
+                )
+            )
+        }
+
+        viewModel.isDarkTheme.observe(this) { isDark ->
+            themeSwitcher.isChecked = isDark
+            val newMode = if (isDark) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+            if (AppCompatDelegate.getDefaultNightMode() != newMode) {
+                AppCompatDelegate.setDefaultNightMode(newMode)
+            }
         }
     }
 }
