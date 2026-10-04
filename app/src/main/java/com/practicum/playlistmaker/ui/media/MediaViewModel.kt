@@ -1,51 +1,47 @@
 package com.practicum.playlistmaker.ui.media
 
-import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.api.PlayerInteractor
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
-class MediaViewModel (private val track: Track) : ViewModel() {
+class MediaViewModel (private val track: Track,
+                      private val playerInteractor: PlayerInteractor) : ViewModel() {
 
     private val mediaStateLD = MutableLiveData(MediaState(track = track))
     val state: LiveData<MediaState> = mediaStateLD
 
-    private var mediaPlayer: MediaPlayer? = null
-    private val handler = Handler(Looper.getMainLooper())
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-    private var updateTimeRunnable: Runnable? = null
+    private var progressJob: Job? = null
 
     init {
         preparePlayer()
     }
 
     private fun preparePlayer() {
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(track.previewUrl)
-            setOnPreparedListener {
-                mediaStateLD.value = mediaStateLD.value?.copy(playbackState = PlaybackState.PREPARED)
-            }
-            setOnCompletionListener {
+        playerInteractor.prepare(
+            url = track.previewUrl,
+            onPrepared = {
+                mediaStateLD.value = mediaStateLD.value?.copy(
+                    playbackState = PlaybackState.PREPARED
+                )
+            },
+            onCompletion = {
                 stopProgressUpdates()
                 mediaStateLD.value = mediaStateLD.value?.copy(
                     playbackState = PlaybackState.DEFAULT,
                     currentTime = "00:00"
                 )
-                resetPlayer()
             }
-            prepareAsync()
-        }
-    }
-
-    private fun resetPlayer() {
-        mediaPlayer?.reset()
-        mediaPlayer?.setDataSource(track.previewUrl)
-        mediaPlayer?.prepareAsync()
+        )
     }
 
     fun onPlayClicked() {
@@ -62,41 +58,39 @@ class MediaViewModel (private val track: Track) : ViewModel() {
     }
 
     private fun startPlayer() {
-        mediaPlayer?.start()
+        playerInteractor.play()
         mediaStateLD.value = mediaStateLD.value?.copy(playbackState = PlaybackState.PLAYING)
         startProgressUpdates()
     }
 
     private fun pausePlayer() {
         if (mediaStateLD.value?.playbackState == PlaybackState.PLAYING) {
-            mediaPlayer?.pause()
+            playerInteractor.pause()
             mediaStateLD.value = mediaStateLD.value?.copy(playbackState = PlaybackState.PAUSED)
             stopProgressUpdates()
         }
     }
 
     private fun startProgressUpdates() {
-        updateTimeRunnable = object : Runnable {
-            override fun run() {
-                if (mediaStateLD.value?.playbackState == PlaybackState.PLAYING) {
-                    val time = dateFormat.format(mediaPlayer?.currentPosition ?: 0)
-                    mediaStateLD.value = mediaStateLD.value?.copy(currentTime = time)
-                    handler.postDelayed(this, DELAY_PLAYBACK_TIME)
-                }
+        progressJob?.cancel()
+        progressJob = viewModelScope.launch {
+            while (isActive) {
+                val time = dateFormat.format(playerInteractor.currentPosition())
+                mediaStateLD.value = mediaStateLD.value?.copy(currentTime = time)
+                delay(DELAY_PLAYBACK_TIME)
             }
         }
-        handler.post(updateTimeRunnable!!)
     }
 
     private fun stopProgressUpdates() {
-        updateTimeRunnable?.let { handler.removeCallbacks(it) }
+        progressJob?.cancel()
+        progressJob = null
     }
 
     override fun onCleared() {
         super.onCleared()
         stopProgressUpdates()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        playerInteractor.release()
     }
 
     companion object {
