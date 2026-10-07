@@ -20,14 +20,13 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.ui.media.MediaActivity
-import androidx.lifecycle.ViewModelProvider
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
@@ -52,14 +51,6 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModelFactory(
-                Creator.provideSearchTracksInteractor(),
-                Creator.provideSearchHistoryInteractor()
-            )
-        )[SearchViewModel::class.java]
 
         trackAdapter = TrackAdapter(emptyList()) { onTrackClicked(it) }
         historyAdapter = TrackAdapter(emptyList()) { onTrackClicked(it) }
