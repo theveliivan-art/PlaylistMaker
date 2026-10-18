@@ -11,12 +11,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.R
-import androidx.lifecycle.ViewModelProvider
-import com.practicum.playlistmaker.creator.Creator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,11 +26,6 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModelFactory(Creator.provideThemeInteractor())
-        )[SettingsViewModel::class.java]
 
         findViewById<ImageView>(R.id.settings_back_button).setOnClickListener { finish() }
 

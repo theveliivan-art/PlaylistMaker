@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.ui.media
 
-import android.os.Build
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -10,16 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.domain.models.Track
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 
 class MediaActivity : AppCompatActivity() {
-
     private lateinit var viewModel: MediaViewModel
     private lateinit var buttonPlay: ImageButton
     private lateinit var buttonPause: ImageButton
@@ -41,10 +39,7 @@ class MediaActivity : AppCompatActivity() {
             return
         }
 
-        viewModel = ViewModelProvider(
-            this,
-            MediaViewModelFactory(track, Creator.providePlayerInteractor())
-        )[MediaViewModel::class.java]
+        viewModel = getViewModel { parametersOf(track) }
 
         val button_back_click = findViewById<ImageView>(R.id.media_button_back)
         button_back_click.setOnClickListener { finish() }
