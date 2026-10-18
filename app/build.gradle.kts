@@ -29,6 +29,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -55,4 +58,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.viewpager2)
 }

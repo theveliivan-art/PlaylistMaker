@@ -6,7 +6,7 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.ui.media.MediaActivity
+import com.practicum.playlistmaker.ui.mediateka.MediatekaActivity
 import com.practicum.playlistmaker.ui.search.SearchActivity
 import com.practicum.playlistmaker.ui.settings.SettingsActivity
 
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SearchActivity::class.java))
         }
         findViewById<Button>(R.id.main_media_button).setOnClickListener {
-            startActivity(Intent(this, MediaActivity::class.java))
+            startActivity(Intent(this, MediatekaActivity::class.java))
         }
         findViewById<Button>(R.id.main_settings_button).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
