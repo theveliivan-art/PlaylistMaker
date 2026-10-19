@@ -17,14 +17,15 @@ class FavoriteFragment: Fragment() {
     }
     private val favoriteViewModel: FavoriteViewModel by viewModel()
 
-    private lateinit var binding: FragmentFavoriteBinding
+    private var _binding: FragmentFavoriteBinding?=null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -35,5 +36,10 @@ class FavoriteFragment: Fragment() {
             favImageEmpty.visibility = View.VISIBLE
             favTextEmpty.visibility = View.VISIBLE
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
