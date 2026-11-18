@@ -3,43 +3,39 @@ package com.practicum.playlistmaker.ui.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.switchmaterial.SwitchMaterial
+import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
     private val viewModel: SettingsViewModel by viewModel()
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_settings)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        findViewById<ImageView>(R.id.settings_back_button).setOnClickListener { finish() }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        themeSwitcher.setOnCheckedChangeListener { _, checked -> viewModel.switchTheme(checked) }
+        binding.themeSwitcher.setOnCheckedChangeListener { _, checked -> viewModel.switchTheme(checked) }
 
-        findViewById<ImageView>(R.id.settings_share_button).setOnClickListener {
+        binding.settingsShareButton.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_url))
             }
             startActivity(Intent.createChooser(shareIntent, getString(R.string.settings_share_choose_title)))
         }
 
-        findViewById<ImageView>(R.id.settings_support_button).setOnClickListener {
+        binding.settingsSupportButton.setOnClickListener {
             val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.settings_support_email)))
@@ -49,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(supportIntent)
         }
 
-        findViewById<ImageView>(R.id.settings_arrow_forward_button).setOnClickListener {
+        binding.settingsArrowForwardButton.setOnClickListener {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
@@ -59,12 +55,17 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         viewModel.isDarkTheme.observe(this) { isDark ->
-            themeSwitcher.isChecked = isDark
+            binding.themeSwitcher.isChecked = isDark
             val newMode = if (isDark) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
             if (AppCompatDelegate.getDefaultNightMode() != newMode) {
                 AppCompatDelegate.setDefaultNightMode(newMode)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

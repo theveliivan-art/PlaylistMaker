@@ -2,23 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/LightDarkTheme"
-    tools:context=".ui.mediateka.MediatekaActivity">
-
-    <ImageView
-        android:id="@+id/mediateka_button_back"
-        android:layout_width="@dimen/image_back_button_w_h"
-        android:layout_height="@dimen/image_back_button_w_h"
-        android:padding="12dp"
-        android:foreground="?attr/selectableItemBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/mediateka_head"
-        app:layout_constraintBottom_toBottomOf="@id/mediateka_head"
-        app:srcCompat="@drawable/ic_arrow_back_24"
-        app:tint="@color/LightDarkFont"/>
+    tools:context=".ui.mediateka.MediatekaFragment">
 
     <TextView
         style="@style/MediatekaHead"
@@ -28,7 +15,7 @@
         android:gravity="center_vertical"
         android:paddingStart="@dimen/mediateka_margin_12"
         android:paddingLeft="@dimen/mediateka_margin_12"
-        app:layout_constraintStart_toEndOf="@id/mediateka_button_back"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/mediateka_text_head"

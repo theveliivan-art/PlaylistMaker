@@ -2,25 +2,15 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/LightDarkTheme"
     android:orientation="vertical"
-    tools:context=".ui.search.SearchActivity">
+    tools:context=".ui.search.SearchFragment">
 
     <LinearLayout
         style="@style/SettingsLinearLayoutStyle"
         android:layout_height="56dp">
-
-        <ImageView
-            android:id="@+id/search_back_button"
-            android:layout_width="@dimen/image_back_button_w_h"
-            android:layout_height="@dimen/image_back_button_w_h"
-            android:foreground="?attr/selectableItemBackground"
-            android:padding="12dp"
-            android:src="@drawable/ic_arrow_back_24"
-            app:tint="@color/LightDarkFont" />
 
         <TextView
             style="@style/SettingsTextViewStyle"
