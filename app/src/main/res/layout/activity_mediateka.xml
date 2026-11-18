@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/LightDarkTheme"
+    tools:context=".ui.mediateka.MediatekaActivity">
+
+    <ImageView
+        android:id="@+id/mediateka_button_back"
+        android:layout_width="@dimen/image_back_button_w_h"
+        android:layout_height="@dimen/image_back_button_w_h"
+        android:padding="12dp"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/mediateka_head"
+        app:layout_constraintBottom_toBottomOf="@id/mediateka_head"
+        app:srcCompat="@drawable/ic_arrow_back_24"
+        app:tint="@color/LightDarkFont"/>
+
+    <TextView
+        style="@style/MediatekaHead"
+        android:id="@+id/mediateka_head"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/mediateka_margin_12"
+        android:paddingLeft="@dimen/mediateka_margin_12"
+        app:layout_constraintStart_toEndOf="@id/mediateka_button_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/mediateka_text_head"
+        />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/LightDarkTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mediateka_head"
+        app:tabTextColor="@color/BlackWhite"
+        app:tabTextAppearance="@style/MediatekaTabTextStyle"
+        app:tabIndicatorColor="@color/BlackWhite"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
