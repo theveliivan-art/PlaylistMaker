@@ -94,6 +94,6 @@ class MediaViewModel (private val track: Track,
     }
 
     companion object {
-        private const val DELAY_PLAYBACK_TIME = 400L
+        private const val DELAY_PLAYBACK_TIME = 300L
     }
 }

@@ -1,13 +1,16 @@
 package com.practicum.playlistmaker.ui.search
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.domain.api.SearchHistoryInteractor
 import com.practicum.playlistmaker.domain.api.SearchTracksInteractor
 import com.practicum.playlistmaker.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchTracksInteractor: SearchTracksInteractor,
@@ -20,14 +23,11 @@ class SearchViewModel(
         )
     )
     val state: LiveData<SearchState> = searchStateLD
-
-    private val handler = Handler(Looper.getMainLooper())
-    private var searchRunnable: Runnable? = null
-
+    private var searchJob: Job? = null
     fun onSearchTextChanged(text: String) {
         if (text == searchStateLD.value?.searchText) return
 
-        searchRunnable?.let { handler.removeCallbacks(it) }
+        searchJob?.cancel()
 
         if (text.isEmpty()) {
             val history = searchHistoryInteractor.getHistory()
@@ -49,13 +49,14 @@ class SearchViewModel(
             showError = false
         )
 
-        val runnable = Runnable { performSearch(text) }
-        searchRunnable = runnable
-        handler.postDelayed(runnable, SEARCH_DEBOUNCE_DELAY)
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            performSearch(text)
+        }
     }
 
     fun onClearClicked() {
-        searchRunnable?.let { handler.removeCallbacks(it) }
+        searchJob?.cancel()
         val history = searchHistoryInteractor.getHistory()
         searchStateLD.value = searchStateLD.value?.copy(
             searchText = "",
@@ -77,7 +78,9 @@ class SearchViewModel(
 
     fun onRetryClicked() {
         val term = searchStateLD.value?.searchText.orEmpty()
-        if (term.isNotEmpty()) performSearch(term)
+        if (term.isEmpty()) return
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch { performSearch(term) }
     }
 
     fun onTrackClicked(track: Track) {
@@ -85,31 +88,28 @@ class SearchViewModel(
         searchStateLD.value = searchStateLD.value?.copy(history = searchHistoryInteractor.getHistory())
     }
 
-    private fun performSearch(term: String) {
+    private suspend fun performSearch(term: String) {
         searchStateLD.value = searchStateLD.value?.copy(isLoading = true, showEmpty = false, showError = false)
-        searchTracksInteractor.searchTracks(
-            term,
-            onSuccess = { result ->
-                searchStateLD.value = searchStateLD.value?.copy(
-                    tracks = result,
-                    isLoading = false,
-                    showEmpty = result.isEmpty(),
-                    showError = false
-                )
-            },
-            onError = {
+        searchTracksInteractor.searchTracks(term).catch {
                 searchStateLD.value = searchStateLD.value?.copy(
                     isLoading = false,
                     showError = true,
                     showEmpty = false
                 )
             }
-        )
+            .collect { result ->
+                searchStateLD.value = searchStateLD.value?.copy(
+                    tracks = result,
+                    isLoading = false,
+                    showEmpty = result.isEmpty(),
+                    showError = false
+                )
+            }
     }
 
     override fun onCleared() {
         super.onCleared()
-        handler.removeCallbacksAndMessages(null)
+        searchJob?.cancel()
     }
 
     companion object {
