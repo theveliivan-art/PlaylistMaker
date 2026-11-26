@@ -15,7 +15,7 @@ constraintlayout = "2.2.1"
 navigationFragmentKtx = "2.9.6"
 retrofit = "3.0.0"
 lifecycle = "2.6.2"
-coroutines = "1.7.3"
+coroutines = "1.10.2"
 viewpager2 = "1.1.0"
 
 [libraries]

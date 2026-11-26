@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.ui.search
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +17,10 @@ import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.ui.media.MediaFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
 
@@ -29,8 +31,7 @@ class SearchFragment : Fragment() {
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
-    private var isClickAllowed = true
-    private val clickHandler = Handler(Looper.getMainLooper())
+    private var clickJob: Job? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -93,25 +94,19 @@ class SearchFragment : Fragment() {
     }
 
     private fun onTrackClicked(track: Track) {
-        if (!clickDebounce()) return
-        viewModel.onTrackClicked(track)
+        if (clickJob?.isActive == true) return
 
-        val args = bundleOf(MediaFragment.EXTRA_TRACK to track)
-        findNavController().navigate(R.id.action_searchFragment_to_mediaFragment, args)
-    }
+        clickJob = viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.onTrackClicked(track)
+            val args = bundleOf(MediaFragment.EXTRA_TRACK to track)
+            findNavController().navigate(R.id.action_searchFragment_to_mediaFragment, args)
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            clickHandler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            delay(CLICK_DEBOUNCE_DELAY)
         }
-        return current
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        clickHandler.removeCallbacksAndMessages(null)
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
     companion object {
